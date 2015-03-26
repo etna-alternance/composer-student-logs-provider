@@ -2,6 +2,8 @@
 
 namespace ETNA\Silex\Provider\StudentLogs;
 
+use ETNA\Monolog\Handler\StudentLogsHandler;
+
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
