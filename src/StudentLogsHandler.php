@@ -13,7 +13,7 @@ class StudentLogsHandler extends AbstractProcessingHandler
     {
         $this->queue = $queue;
         if (null === $this->queue) {
-            throw new \Exception("StudentLogsHandler requires a queue");
+            throw new \Exception("StudentLogsHandler requires a RabbitMQ queue");
         }
 
         parent::__construct($level, $bubble);
@@ -30,7 +30,7 @@ class StudentLogsHandler extends AbstractProcessingHandler
         if (1 === count($record) && isset($record["level"])) {
             return true;
         }
-        return isset($record["context"]) && isset($record["context"]["duration"]);
+        return isset($record["context"]["duration"]);
     }
 
     /**
