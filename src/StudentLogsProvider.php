@@ -41,7 +41,12 @@ class StudentLogsProvider implements ServiceProviderInterface
         $log = new Logger('students_logs');
         $log->pushHandler(new StudentLogsHandler($app['amqp.queues']['students_logs']));
 
-        $syslog = new SyslogUdpHandler("172.16.128.219");
+        $syslog_ip = getenv("STUDENT_SYSLOG_IP");
+        if (false === $syslog_ip) {
+            throw new \Exception("The environment variable STUDENT_SYSLOG_IP is not set");
+        }
+
+        $syslog = new SyslogUdpHandler($syslog_ip);
         $syslog->setFormatter(new LineFormatter('%context%'));
         $log->pushHandler($syslog);
 
