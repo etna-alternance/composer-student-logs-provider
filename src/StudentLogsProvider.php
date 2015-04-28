@@ -2,14 +2,8 @@
 
 namespace ETNA\Silex\Provider\StudentLogs;
 
-use ETNA\Monolog\Handler\StudentLogsHandler;
-
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-
-use Monolog\Formatter\LineFormatter;
-use Monolog\Logger;
-use Monolog\Handler\SyslogUdpHandler;
 
 class StudentLogsProvider implements ServiceProviderInterface
 {
@@ -26,30 +20,37 @@ class StudentLogsProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $app['amqp.queues.options'] = array_merge($app['amqp.queues.options'], [
-            'students_logs' => [
-                'passive'     => false,
-                'durable'     => true,
-                'exclusive'   => false,
-                'auto_delete' => false,
-                'exchange'    => 'default',
-                'routing.key' => 'students_logs',
-                'channel'     => 'default',
+        $app["amqp.queues.options"] = array_merge($app["amqp.queues.options"], [
+            "students_logs" => [
+                "passive"     => false,
+                "durable"     => true,
+                "exclusive"   => false,
+                "auto_delete" => false,
+                "exchange"    => "default",
+                "routing.key" => "students_logs",
+                "channel"     => "default",
             ],
         ]);
 
-        $log = new Logger('students_logs');
-        $log->pushHandler(new StudentLogsHandler($app['amqp.queues']['students_logs']));
+        $app["student_logs"] = $app->share(
+            function (Application $app) {
+                return function($student_id, $session_id = null, $activity_id = null, $type, $duration, \DateTime $start, array $info_sup = []) use ($app) {
+                    $job = array_merge(
+                        $info_sup,
+                        [
+                            "student_id"  => $student_id,
+                            "session_id"  => $session_id,
+                            "activity_id" => $activity_id,
+                            "type"        => $type,
+                            "duration"    => $duration,
+                            "start"       => $start->format("Y-m-d H:i:s"),
+                        ]
+                    );
 
-        $syslog_ip = getenv("STUDENT_SYSLOG_IP");
-        if (false === $syslog_ip) {
-            throw new \Exception("The environment variable STUDENT_SYSLOG_IP is not set");
-        }
-
-        $syslog = new SyslogUdpHandler($syslog_ip);
-        $syslog->setFormatter(new LineFormatter('%context%'));
-        $log->pushHandler($syslog);
-
-        $app['students_logs'] = $log;
+                    $app["amqp.queues"]["students_logs"]->send($job);
+                    $app["logs"]->notice("Got logs for student {$student_id} with duration {$duration}", $job);
+                };
+            }
+        );
     }
 }
