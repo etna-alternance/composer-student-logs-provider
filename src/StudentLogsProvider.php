@@ -35,6 +35,13 @@ class StudentLogsProvider implements ServiceProviderInterface
         $app["student_logs"] = $app->share(
             function (Application $app) {
                 return function($student_id, $session_id = null, $activity_id = null, $type, $duration, \DateTime $start, array $info_sup = []) use ($app) {
+                    if (false === isset($app["amqp.queues"]["students_logs"])) {
+                        throw new Exception("The StudentLogsProvider requires the students_logs RabbitMQ queue to exists");
+                    }
+                    if (false === isset($app["logs"])) {
+                        throw new Exception("The StudentLogsProvider requires the app logger");
+                    }
+
                     $job = array_merge(
                         $info_sup,
                         [
