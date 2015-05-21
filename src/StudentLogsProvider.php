@@ -34,7 +34,7 @@ class StudentLogsProvider implements ServiceProviderInterface
 
         $app["student_logs"] = $app->share(
             function (Application $app) {
-                return function($student_id, $session_id = null, $activity_id = null, $type, $duration, \DateTime $start, array $info_sup = []) use ($app) {
+                return function($student_id, $type, $duration, $session_id = null, $activity_id = null, array $info_sup = []) use ($app) {
                     if (false === isset($app["amqp.queues"]["students_logs"])) {
                         throw new \Exception("The StudentLogsProvider requires the students_logs RabbitMQ queue to exists");
                     }
@@ -42,6 +42,7 @@ class StudentLogsProvider implements ServiceProviderInterface
                         throw new \Exception("The StudentLogsProvider requires the app logger");
                     }
 
+                    $now = new \DateTime();
                     $job = array_merge(
                         $info_sup,
                         [
@@ -50,12 +51,13 @@ class StudentLogsProvider implements ServiceProviderInterface
                             "activity_id" => $activity_id,
                             "type"        => $type,
                             "duration"    => $duration,
-                            "start"       => $start->format("Y-m-d H:i:s"),
+                            "start"       => $now->format("Y-m-d H:i:s"),
                         ]
                     );
 
+                    $log_content = "Got logs of type {$type} for student {$student_id} with duration {$duration}";
                     $app["amqp.queues"]["students_logs"]->send($job);
-                    $app["logs"]->notice("Got logs for student {$student_id} with duration {$duration}", $job);
+                    $app["logs"]->notice($log_content, $job);
                 };
             }
         );
