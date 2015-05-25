@@ -1,0 +1,38 @@
+{
+    "name": "etna/student-logs-provider",
+    "description": "Logger used to log student actions",
+    "keywords": ["student", "logs", "rabbitmq", "silex"],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "ETNA",
+            "email": "dev@etna-alternance.net",
+            "homepage": "http://etna-alternance.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "silex/silex": "1.x",
+        "monolog/monolog": "~1.10",
+        "etna/rabbitmq-service-provider": "0.x"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-4": {
+            "ETNA\\Silex\\Provider\\StudentLogs\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "repositories": [
+       {
+           "type": "composer",
+           "url": "http://blu-composer.herokuapp.com/"
+       }
+   ]
+}
