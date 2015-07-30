@@ -43,17 +43,15 @@ class StudentLogsProvider implements ServiceProviderInterface
                     }
 
                     $now = new \DateTime();
-                    $job = array_merge(
-                        $info_sup,
-                        [
+                    $job = [
                             "student_id"  => $student_id,
                             "session_id"  => $session_id,
                             "activity_id" => $activity_id,
                             "type"        => $type,
                             "duration"    => $duration,
                             "start"       => $now->format("Y-m-d H:i:s"),
-                        ]
-                    );
+                            "metas"       => $info_sup,
+                    ];
 
                     $log_content = "Got logs of type {$type} for student {$student_id} with duration {$duration}";
                     $app["amqp.queues"]["students_logs"]->send($job);
