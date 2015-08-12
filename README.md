@@ -10,7 +10,7 @@ Modifier `composer.json` :
 {
     // ...
     "require": {
-        "etna/student-logs-provider": "~0.1"
+        "etna/student-logs-provider": "1.0.1"
     },
     "repositories": [
        {
