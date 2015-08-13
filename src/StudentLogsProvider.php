@@ -42,7 +42,7 @@ class StudentLogsProvider implements ServiceProviderInterface
                         throw new \Exception("The StudentLogsProvider requires the app logger");
                     }
 
-                    $now = new \DateTime();
+                    $now = new \DateTime(date('Y-m-d H:i:s'));
                     $job = [
                             "student_id"  => $student_id,
                             "session_id"  => $session_id,
