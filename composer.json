@@ -11,10 +11,9 @@
         }
     ],
     "require": {
-        "php": ">=5.5",
-        "silex/silex": "1.x",
-        "monolog/monolog": "~1.10",
-        "etna/rabbitmq-service-provider": "0.x"
+        "php": ">=5.6",
+        "silex/silex": "2.x",
+        "etna/rabbitmq-service-provider": "2.x"
     },
     "config": {
         "bin-dir": "bin"
@@ -26,7 +25,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "2.0-dev"
         }
     },
     "repositories": [
