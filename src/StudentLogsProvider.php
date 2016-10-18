@@ -16,8 +16,8 @@ class StudentLogsProvider implements ServiceProviderInterface
             throw new \Exception("The StudentLogsProvider requires the app logger");
         }
 
-        $app["student_logs"] = function ($app) {
+        $app["students_logs"] = function ($app) {
             return new StudentLogs($app);
-        }
+        };
     }
 }
