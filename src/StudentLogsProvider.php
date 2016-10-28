@@ -10,7 +10,7 @@ class StudentLogsProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         if (false === isset($app["rabbit.producers"]) && false === isset($app["rabbit.producers"]["students_logs"])) {
-            throw new \Exception("The StudentLogsProvider requires the students_logs RabbitMQ queue to exists");
+            throw new \Exception("The StudentLogsProvider requires the students_logs RabbitMQ queue to exist");
         }
         if (false === isset($app["logs"])) {
             throw new \Exception("The StudentLogsProvider requires the app logger");
