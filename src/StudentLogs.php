@@ -16,16 +16,37 @@ class StudentLogs
         $this->logger   = $app['logs'];
     }
 
-    public function addLogs($student_id, $type, $duration, $session_id = null, $activity_id = null, array $info_sup = [])
+    /**
+     * Create a job to add logs to student.
+     *
+     * @param integer $student_id
+     * @param string $type
+     * @param integer $duration
+     * @param mixed $session_id
+     * @param mixed $activity_id
+     * @param array $info_sup
+     * @param mixed $start_date
+     * @return void
+     */
+    public function addLogs(
+        $student_id,
+        $type,
+        $duration,
+        $session_id = null,
+        $activity_id = null,
+        array $info_sup = [],
+        $start_date = null
+    )
     {
-        $now = new \DateTime(date('Y-m-d H:i:s'));
+        $start = $start_date ?: date('Y-m-d H:i:s');
+
         $job = [
                 'student_id'  => $student_id,
                 'session_id'  => $session_id,
                 'activity_id' => $activity_id,
                 'type'        => $type,
                 'duration'    => $duration,
-                'start'       => $now->format('Y-m-d H:i:s'),
+                'start'       => $start,
                 'metas'       => $info_sup,
         ];
 
